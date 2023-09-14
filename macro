@@ -1,147 +1,96 @@
-Sub Ctrlj()
-'
-' Ctrlj Macro
-' Payment History Organization
-'
+Sub TESTING_AllyPaymentHistory_Functional()
 
-'
-    Selection.End(xlDown).Select
-    Selection.End(xlDown).Select
-    Range("A10").Select
-    ActiveSheet.PasteSpecial Format:="HTML", Link:=False, DisplayAsIcon:= _
-        False, NoHTMLFormatting:=True
-    Cells.Select
-    Range("A10").Activate
-    Cells.EntireColumn.AutoFit
-    Range("A10").Select
-    Selection.End(xlToRight).Select
-    Selection.End(xlToRight).Select
+' This macro formats the XLS data from Advantage Payment Schedule into a format usable by GAP Vendors
+
+' Select the range and apply the formatting.
+With Range("A1:H8")
+    .HorizontalAlignment = xlGeneral
+    .VerticalAlignment = xlBottom
+    .WrapText = False
+    .Orientation = 0
+    .AddIndent = False
+    .IndentLevel = 0
+    .ShrinkToFit = False
+    .ReadingOrder = xlContext
+    .MergeCells = False
+End With
+
+' Unmerge the range.
+Range("A1:H8").UnMerge
+
+' Get the current date
+Dim today As Date
+today = Date
+
+' Find the first instance of a future date in column A
+Dim firstFutureDateRow As Long
+Dim found As Boolean
+
+found = False
+
+' Loop through all the cells in column A
+For i = 1 To Rows.Count
+
+    ' If the current cell contains a future date, set the found flag to True
+    If IsDate(Range("A" & i).Value) And Range("A" & i).Value > today Then
+        found = True
+        firstFutureDateRow = i
+        Exit For
+    End If
+
+Next i
+
+' If a future date is found, select all the applicable rows and delete them
+If found Then
+    Range(Rows(firstFutureDateRow), Rows(Rows.Count).End(xlUp)).Select
+    Selection.Delete Shift:=xlUp
+End If
+
+' Find the first instance of Payment Received in Column B
+Dim firstPaymentReceivedRow As Long
+Dim paymentReceivedFound As Boolean
+
+paymentReceivedFound = False
+
+' Loop through all the cells in column B
+For i = 1 To Rows.Count
+
+    ' If the current cell contains the text "Payment received", set the paymentReceivedFound flag to True
+    If Range("B" & i).Value = "Payment received" Then
+        paymentReceivedFound = True
+        firstPaymentReceivedRow = i
+        Exit For
+    End If
+
+Next i
+
+' If the text "Payment received" is found, delete all the rows above it to row 10
+If paymentReceivedFound Then
+    Range(Rows(10), Rows(firstPaymentReceivedRow - 1)).Delete Shift:=xlUp
+End If
+
+
+
+' Autofit the entire column
+Cells.EntireColumn.AutoFit
+
+    Range("G10").Select
     Range(Selection, Selection.End(xlDown)).Select
-    Selection.Cut
-    Range("H10").Select
-    ActiveSheet.Paste
-    Range("H8").Select
-    ActiveCell.FormulaR1C1 = "-1"
-    Range("H8").Select
-    Selection.Copy
-    Range("H10").Select
-    Range(Selection, Selection.End(xlDown)).Select
-    Selection.PasteSpecial Paste:=xlPasteAll, Operation:=xlMultiply, _
-        SkipBlanks:=False, Transpose:=False
-    Range("H8").Select
-    Application.CutCopyMode = False
-    Selection.ClearContents
-    Range("H10").Select
-    Range(Selection, Selection.End(xlDown)).Select
-    Selection.NumberFormat = _
-        "_([$$-en-US]* #,##0.00_);_([$$-en-US]* (#,##0.00);_([$$-en-US]* ""-""??_);_(@_)"
-    Range("G9").Select
-    Selection.End(xlUp).Select
-    Application.PrintCommunication = False
-    With ActiveSheet.PageSetup
-        .PrintTitleRows = ""
-        .PrintTitleColumns = ""
-    End With
-    Application.PrintCommunication = True
-    ActiveSheet.PageSetup.PrintArea = ""
-    Application.PrintCommunication = False
-    With ActiveSheet.PageSetup
-        .LeftHeader = ""
-        .CenterHeader = ""
-        .RightHeader = ""
-        .LeftFooter = ""
-        .CenterFooter = ""
-        .RightFooter = ""
-        .LeftMargin = Application.InchesToPoints(0.75)
-        .RightMargin = Application.InchesToPoints(0.75)
-        .TopMargin = Application.InchesToPoints(1)
-        .BottomMargin = Application.InchesToPoints(1)
-        .HeaderMargin = Application.InchesToPoints(0.5)
-        .FooterMargin = Application.InchesToPoints(0.5)
-        .PrintHeadings = False
-        .PrintGridlines = False
-        .PrintComments = xlPrintNoComments
-        .CenterHorizontally = False
-        .CenterVertically = False
-        .Orientation = xlLandscape
-        .Draft = False
-        .PaperSize = xlPaperA4
-        .FirstPageNumber = xlAutomatic
-        .Order = xlOverThenDown
-        .BlackAndWhite = False
-        .Zoom = 100
-        .PrintErrors = xlPrintErrorsDisplayed
-        .OddAndEvenPagesHeaderFooter = False
-        .DifferentFirstPageHeaderFooter = False
-        .ScaleWithDocHeaderFooter = True
-        .AlignMarginsHeaderFooter = False
-        .EvenPage.LeftHeader.Text = ""
-        .EvenPage.CenterHeader.Text = ""
-        .EvenPage.RightHeader.Text = ""
-        .EvenPage.LeftFooter.Text = ""
-        .EvenPage.CenterFooter.Text = ""
-        .EvenPage.RightFooter.Text = ""
-        .FirstPage.LeftHeader.Text = ""
-        .FirstPage.CenterHeader.Text = ""
-        .FirstPage.RightHeader.Text = ""
-        .FirstPage.LeftFooter.Text = ""
-        .FirstPage.CenterFooter.Text = ""
-        .FirstPage.RightFooter.Text = ""
-    End With
-    Application.PrintCommunication = True
-    Application.PrintCommunication = False
-    With ActiveSheet.PageSetup
-        .PrintTitleRows = ""
-        .PrintTitleColumns = ""
-    End With
-    Application.PrintCommunication = True
-    ActiveSheet.PageSetup.PrintArea = ""
-    Application.PrintCommunication = False
-    With ActiveSheet.PageSetup
-        .LeftHeader = ""
-        .CenterHeader = ""
-        .RightHeader = ""
-        .LeftFooter = ""
-        .CenterFooter = ""
-        .RightFooter = ""
-        .LeftMargin = Application.InchesToPoints(0.75)
-        .RightMargin = Application.InchesToPoints(0.75)
-        .TopMargin = Application.InchesToPoints(1)
-        .BottomMargin = Application.InchesToPoints(1)
-        .HeaderMargin = Application.InchesToPoints(0.5)
-        .FooterMargin = Application.InchesToPoints(0.5)
-        .PrintHeadings = False
-        .PrintGridlines = False
-        .PrintComments = xlPrintNoComments
-        .CenterHorizontally = False
-        .CenterVertically = False
-        .Orientation = xlLandscape
-        .Draft = False
-        .PaperSize = xlPaperA4
-        .FirstPageNumber = xlAutomatic
-        .Order = xlOverThenDown
-        .BlackAndWhite = False
-        .Zoom = False
-        .FitToPagesWide = 1
-        .FitToPagesTall = 0
-        .PrintErrors = xlPrintErrorsDisplayed
-        .OddAndEvenPagesHeaderFooter = False
-        .DifferentFirstPageHeaderFooter = False
-        .ScaleWithDocHeaderFooter = True
-        .AlignMarginsHeaderFooter = False
-        .EvenPage.LeftHeader.Text = ""
-        .EvenPage.CenterHeader.Text = ""
-        .EvenPage.RightHeader.Text = ""
-        .EvenPage.LeftFooter.Text = ""
-        .EvenPage.CenterFooter.Text = ""
-        .EvenPage.RightFooter.Text = ""
-        .FirstPage.LeftHeader.Text = ""
-        .FirstPage.CenterHeader.Text = ""
-        .FirstPage.RightHeader.Text = ""
-        .FirstPage.LeftFooter.Text = ""
-        .FirstPage.CenterFooter.Text = ""
-        .FirstPage.RightFooter.Text = ""
-    End With
-    Application.PrintCommunication = True
-    ActiveWorkbook.Save
+    
+        ' Get the selected range
+    Dim selectedRange As Range
+    Set selectedRange = Selection
+
+    ' Multiply the selected range by -1
+    For Each cell In selectedRange
+        cell.Value = cell.Value * -1
+    Next cell
+
+' Set Column A width to 12.71
+Range("A:A").ColumnWidth = 12.71
+
+' Select cell A1
+Range("A1").Select
+
 End Sub
+
